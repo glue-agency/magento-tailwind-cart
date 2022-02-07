@@ -3,6 +3,9 @@
     "description": "Magento 2 tailwind cart integration",
     "type": "magento2-module",
     "autoload": {
+        "files": [
+            "registration.php"
+        ],
         "psr-4": {
             "GlueTeam\\MagentoTailwindCart\\": ""
         }
