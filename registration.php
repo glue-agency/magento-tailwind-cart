@@ -8,4 +8,4 @@
 
 use Magento\Framework\Component\ComponentRegistrar;
 
-ComponentRegistrar::register(ComponentRegistrar::MODULE, 'Glue_TailwindCart', __DIR__);
+ComponentRegistrar::register(ComponentRegistrar::MODULE, 'GlueTeam_TailwindCart', __DIR__);

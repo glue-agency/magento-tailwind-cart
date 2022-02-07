@@ -46,7 +46,7 @@
 
         <referenceContainer name="checkout.cart.container">
             <!-- create tailwind wrapper template -->
-            <block name="cart.tw-wrapper" template="Glue_TailwindCart::cart_summary_tailwind_wrapper.phtml" />
+            <block name="cart.tw-wrapper" template="GlueTeam_TailwindCart::cart_summary_tailwind_wrapper.phtml" />
 
         </referenceContainer>
 

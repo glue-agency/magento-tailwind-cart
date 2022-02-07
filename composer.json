@@ -7,7 +7,7 @@
             "registration.php"
         ],
         "psr-4": {
-            "GlueTeam\\MagentoTailwindCart\\": ""
+            "GlueTeam\\TailwindCart\\": ""
         }
     },
     "authors": [
