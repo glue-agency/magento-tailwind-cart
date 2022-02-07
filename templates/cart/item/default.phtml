@@ -1,0 +1,263 @@
+<?php
+/** @var $block \Magento\Checkout\Block\Cart\Item\Renderer */
+
+$_item = $block->getItem();
+$item = $block->getItem();
+$product = $_item->getProduct();
+$isVisibleProduct = $product->isVisibleInSiteVisibility();
+/** @var \Magento\Msrp\Helper\Data $helper */
+$helper = $this->helper('Magento\Msrp\Helper\Data');
+$canApplyMsrp = $helper->isShowBeforeOrderConfirm($product) && $helper->isMinimalPriceLessMsrp($product);
+
+
+//TRIGGER collect totals, otherwise the latest product discount details are not yet present
+// this is otherwise loaded in the XHR request for totals in the sidebar
+$_item->getQuote()->collectTotals()->setTriggerRecollect(0)->save();
+
+
+$itemDiscountTotal = 0;
+$discountRulesHTML = '';
+//var_dump($_item->getQuote()->getMultilineDiscount());
+if ($salesrulesPerItem = $_item->getQuote()->getSalesrulesPerItem()) {
+    $salesrulesPerItem = json_decode($salesrulesPerItem, true);
+    if (isset($salesrulesPerItem['discount_per_item'][$_item->getId()])) {
+        $salesrulesForItem = $salesrulesPerItem['discount_per_item'][$_item->getId()];
+        $discountRulesHTML .= '<div class="bg-gray-100 p-2 font-bold">';
+        // $discountRulesHTML .= '<span class="font-bold">Extra Kortingen:</span><br/>';
+
+        foreach ($salesrulesForItem as $salesRulesDetailsItem) {
+            $ruleDiscountAmount = round($salesRulesDetailsItem['discount_amount'], 2);
+            $itemDiscountTotal += $ruleDiscountAmount;
+            $discountRulesHTML .= "<span class='text-red-600'>" . $salesRulesDetailsItem['rule_label'] . "</span><br/>";
+            //. ": -€ " . $ruleDiscountAmount
+        }
+        $discountRulesHTML .= '</div>';
+    }
+}
+
+
+?>
+
+<!-- PRODUCT ITEM -->
+<div class="flex flex-wrap items-center -mx-4 mb-8 pb-2 md:mb-3 ">
+    <!-- START PRODUCT IMAGE+NAME WRAPPER -->
+    <div class="w-full md:w-4/6 lg:w-6/12 px-4 mb-6 md:mb-0">
+        <div class="flex -mx-4 flex-wrap items-center">
+            <!-- PRODUCT IMAGE -->
+            <div class="w-full md:w-1/3 px-4 mb-3 ">
+                <div class="items-center justify-center w-full md:w-24 bg-gray-100">
+                    <?php if ($block->hasProductUrl()): ?>
+                    <a href="<?php echo $block->getProductUrl() ?>"
+                       title="<?php echo $block->escapeHtml($block->getProductName()) ?>"
+                       tabindex="-1"
+                       class="product-item-photo">
+                        <?php endif; ?>
+
+                        <div class="object-scale-down">
+                            <img
+                                src="<?php echo $block->getImage($block->getProductForThumbnail(), 'category_page_grid')->getImageUrl(); ?>"/>
+                        </div>
+
+                        <?php if ($block->hasProductUrl()): ?>
+                    </a>
+                <?php endif; ?>
+                </div>
+            </div>
+            <!-- END PRODUCT IMAGE -->
+
+            <!-- PRODUCT NAME -->
+            <div class="md:w-2/3 w-full px-4">
+                <!-- PRODUCT NAME/URL -->
+                <h3 class="mb-2 text-xl font-bold font-heading">
+                    <?php if ($block->hasProductUrl()): ?>
+                        <a href="<?php /* @escapeNotVerified */
+                        echo $block->getProductUrl() ?>"><?php echo $block->escapeHtml($block->getProductName()) ?></a>
+                    <?php else : ?>
+                        <?php echo $block->escapeHtml($block->getProductName()) ?>
+                    <?php endif; ?>
+                </h3>
+                <!-- END PRODUCT NAME/URL -->
+
+                <!-- PRODUCT OPTIONS -->
+                <?php if ($_options = $block->getOptionList()): ?>
+                    <ul class="flex flex-wrap mt-2 ">
+                        <?php foreach ($_options as $_option) : ?>
+                            <?php $_formatedOptionValue = $block->getFormatedOptionValue($_option) ?>
+                            <li class="mr-4">
+                                <span
+                                    class="mr-1 text-gray-500"><?php echo $block->escapeHtml($_option['label']) ?>:</span>
+                                <?php if (isset($_formatedOptionValue['full_view'])): ?>
+                                    <?php /* @escapeNotVerified */
+                                    echo $_formatedOptionValue['full_view'] ?>
+                                <?php else : ?>
+                                    <?php /* @escapeNotVerified */
+                                    echo $_formatedOptionValue['value'] ?>
+                                <?php endif; ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+                <!-- END PRODUCT OPTIONS -->
+
+                <!-- PRODUCT ADDITIONAL INFORMATION -->
+                <?php $addInfoBlock = $block->getProductAdditionalInformationBlock(); ?>
+                <?php if ($addInfoBlock): ?>
+                    <?php echo $addInfoBlock->setItem($_item)->toHtml() ?>
+                <?php endif; ?>
+                <div class="">
+                    <?php /* @escapeNotVerified */
+                    echo $block->getActions($_item) ?>
+                </div>
+                <!-- END PRODUCT ADDITIONAL INFORMATION -->
+
+            </div>
+            <!-- END PRODUCT NAME -->
+        </div>
+    </div>
+    <!-- END PRODUCT IMAGE+NAME WRAPPER -->
+
+
+    <!-- PRODUCT PRICE PER ITEM -->
+
+    <!-- PRODUCT PRICE -->
+    <div class="hidden lg:block lg:w-2/12 px-4">
+
+        <p class="cart-price">
+
+            <?php if ($item->getProduct()->getPrice() != $item->getPriceInclTax()): ?>
+        <p class="text-base font-bold font-heading"><?= $this->helper(Magento\Checkout\Helper\Data::class)->formatPrice($item->getPriceInclTax()) ?></p>
+        <span class="text-sm text-gray-500 line-through"><?= /* @escapeNotVerified */
+            $this->helper(Magento\Checkout\Helper\Data::class)->formatPrice($item->getProduct()->getPrice());
+             ?></span>
+        <?php else: ?>
+            <p class="text-base font-bold font-heading">
+                <?= /* @escapeNotVerified */
+                $this->helper(Magento\Checkout\Helper\Data::class)->formatPrice($item->getPriceInclTax()) ?>
+            </p>
+        <?php endif; ?>
+        </span>
+
+    </div>
+    <!-- END PRODUC PRICE -->
+
+    <!-- PRODUCT QUANTITY SELECTOR-->
+    <!-- START QUANTITY SELECTOR -->
+    <div class=" w-1/2 md:w-1/6 lg:w-2/12 px-4">
+        <div
+            class="inline-flex items-center px-4 font-semibold font-heading text-gray-500 border border-gray-200 focus:ring-blue-300 focus:border-blue-300 rounded-md"
+            id="qty_change_<?php /* @escapeNotVerified */ echo $_item->getId() ?>"
+            data-label="<?= /* @escapeNotVerified */ __('Qty') ?>"
+            data-th="<?php echo $block->escapeHtml(__('Qty')); ?>"
+            data-bind="scope: 'qty_change_<?php /* @escapeNotVerified */ echo $_item->getId() ?>'"
+        >
+            <button type="button" data-bind="click: decreaseQty" class="py-2 hover:text-gray-700">
+                <svg width="12" height="2" viewbox="0 0 12 2" fill="none"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <g opacity="0.35">
+                        <rect x="12" width="2" height="12" transform="rotate(90 12 0)"
+                              fill="currentColor"></rect>
+                    </g>
+                </svg>
+            </button>
+
+            <input id="cart-<?php ///* @escapeNotVerified */
+            echo $_item->getId() ?>-qty"
+                   name="cart[<?php /* @escapeNotVerified */
+                   echo $_item->getId() ?>][qty]"
+                   data-cart-item-id="
+            <?php $block->escapeHtml($_item->getSku()) ?>"
+                   value="<?php /* @escapeNotVerified */
+                   echo $block->getQty() ?>"
+                   type="number"
+                   size="4"
+                   title="<?php echo $block->escapeHtml(__('Qty')); ?>"
+                   class="input-text qty w-12 m-0 px-2 py-4 text-center md:text-right border-0 focus:ring-transparent focus:outline-none rounded-md"
+                   maxlength="12"
+                   data-validate="{required:true,'validate-greater-than-zero':true}"
+                   data-role="cart-item-qty"
+                   data-bind="value: qty(), event: {blur: checkQty}"/>
+
+            <button type="button" data-bind="click: increaseQty" class="py-2 hover:text-gray-700">
+                <svg width="12" height="12" viewbox="0 0 12 12" fill="none"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <g opacity="0.35">
+                        <rect x="5" width="2" height="12" fill="currentColor"></rect>
+                        <rect x="12" y="5" width="2" height="12" transform="rotate(90 12 5)"
+                              fill="currentColor"></rect>
+                    </g>
+                </svg>
+            </button>
+
+            <button type="submit" name="update_cart_action_<?php /* @escapeNotVerified */
+            echo $_item->getId() ?>"
+                    data-cart-item-update=""
+                    data-bind="fadeVisible: isUpdateButtonVisible"
+                    value="update_qty"
+                    title="<?php echo $block->escapeHtml(__('Update Shopping Cart')); ?>"
+                    class="action update compact hidden">
+
+                <script type="text/x-magento-init">
+                {
+                    "*": {
+                        "Magento_Ui/js/core/app": {
+                            "components": {
+                                "qty_change_<?php /* @escapeNotVerified */echo $_item->getId() ?>": {
+                                    "component": "Magento_Checkout/js/view/product/view/qty_change",
+                                    "defaultQty": <?php echo $block->getQty() ?>,
+                                    "isUpdateButtonVisible": false
+                                }
+                             }
+                        }
+                    }
+                }
+            </script>
+
+        </div>
+    </div>
+    <!-- END QUANTITY SELECTOR -->
+
+    <!-- START FINAL PRICE -->
+    <div class="w-1/2 md:w-1/6 lg:w-2/12 px-4 text-right">
+
+        <!-- PRODUCT TOTAL PRICE  -->
+        <?php
+        if ($itemDiscountTotal > 0) {
+            $realTotalAfterDiscount = $_item->getRowTotal() - $itemDiscountTotal;
+            ?>
+            <p class="text-2xl md:text-xl text-red-600 font-bold font-heading"><?= $this->helper(Magento\Checkout\Helper\Data::class)->formatPrice($realTotalAfterDiscount) ?></p>
+            <span
+                class="text-lg text-blue-600  line-through"> <?= $this->helper(Magento\Checkout\Helper\Data::class)->formatPrice($_item->getRowTotal()) ?> </span>
+            <?php
+        } else {
+            ?>
+            <p class="text-2xl md:text-xl text-blue-600 font-bold font-heading"><?= $this->helper(Magento\Checkout\Helper\Data::class)->formatPrice($_item->getRowTotal()) ?></p>
+            <?php
+        }
+        //echo $block->getRowTotalHtml($_item);
+        ?>
+
+    </div>
+    <!-- END FINAL PRICE -->
+
+    <div class="flex justify-between w-full">
+        <div>
+            <!-- MESSAGES -->
+            <?php if ($messages = $block->getMessages()): ?>
+
+                <?php foreach ($messages as $message): ?>
+                    <div class="cart item message <?php /* @escapeNotVerified */
+                    echo $message['type'] ?>">
+                        <div><?php echo $message['text'] ?></div>
+                    </div>
+                <?php endforeach; ?>
+
+            <?php endif; ?>
+        </div>
+        <div class="align-right pr-4">
+            <!-- DISCOUNT RULES HTML INFO -->
+            <?php echo $discountRulesHTML; ?>
+        </div>
+    </div>
+
+</div>
+<!-- END PRODUCT -->

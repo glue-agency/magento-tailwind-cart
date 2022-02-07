@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <html>
+        <attribute name="class" value="DISABLEcraft"/>
+    </html>
+    <head>
+        <remove src="css/styles-m.css" />
+        <remove src="css/styles-l.css" />
+        <remove src="css/print.css" />
+        <css src="Magento_Theme::css/overrides.css" />
+    </head>
+    <body>
+        <referenceBlock name="head.additional">
+            <!-- <block class="Magento\Framework\View\Element\Template" name="fonts.loaded.js" before="-" template="Magento_Theme::fonts_loaded.phtml" /> -->
+            <block class="Magento\Framework\View\Element\Template" name="craft.fonts.css" before="-" template="Magento_Theme::craft_fonts_css.phtml" />
+            <block class="Magento\Framework\View\Element\Template" name="critical_css_brooklyn" before="-" template="Magento_Theme::critical_css.phtml"/>
+            <block class="Magento\Framework\View\Element\Template" name="craft.css"     after="-" template="Magento_Theme::craftcss.phtml" />
+            <block class="Magento\Framework\View\Element\Template" name="craft.head.js" after="-" template="Magento_Theme::craft_head_js.phtml" />
+        </referenceBlock>
+
+        <referenceContainer name="header.container">
+            <block class="Magento\Framework\View\Element\Template" name="craft.header" template="Magento_Theme::html/header-craft.phtml" />
+        </referenceContainer>
+
+        <referenceBlock name="page.main.title" >
+            <arguments>
+                <argument name="css_class" xsi:type="string">craft richtext styled store-title</argument>
+            </arguments>
+        </referenceBlock>
+
+        <referenceBlock name="checkout.cart.shipping">
+            <arguments>
+                <argument name="jsLayout" xsi:type="array">
+                    <item name="components" xsi:type="array">
+                        <item name="block-summary" xsi:type="array">
+                            <!-- My custom part: -->
+                            <item name="config" xsi:type="array">
+                                <item name="componentDisabled" xsi:type="boolean">true</item>
+                            </item>
+
+                        </item>
+                    </item>
+                </argument>
+            </arguments>
+        </referenceBlock>
+
+        <referenceContainer name="checkout.cart.container">
+            <!-- create tailwind wrapper template -->
+            <block name="cart.tw-wrapper" template="Glue_TailwindCart::cart_summary_tailwind_wrapper.phtml" />
+
+        </referenceContainer>
+
+        <!-- Push all items to the tailwind wrapper. We are free to position them in the wrapper without applying position in layout xml -->
+        <move element="checkout.cart.form" destination="cart.tw-wrapper" />
+        <move element="cart.summary" destination="cart.tw-wrapper" />
+        <move element="page.main.title" destination="cart.tw-wrapper" before="-" />
+        <move element="ambanners.products" destination="cart.tw-wrapper" before="-" />
+
+
+        <move element="cart.summary.wrapper" destination="checkout.cart.container" after="checkout.cart.form" />
+        <move element="awarp_crosssell_instead_shopping_cart" destination="page.wrapper" after="main.content" />
+
+        <move element="checkout.cart.coupon" destination="cart.tw-wrapper" after="-" />
+        <move element="checkout.cart.amgiftcard" destination="cart.tw-wrapper" after="-" />
+
+
+        <move element="logo" destination="header-wrapper"/>
+
+        <referenceContainer name="footer-container">
+            <block class="Magento\Framework\View\Element\Template" name="craft.footer" template="Magento_Theme::html/footer-craft.phtml" />
+        </referenceContainer>
+
+        <referenceContainer name="before.body.end">
+            <block class="Magento\Framework\View\Element\Template" name="craft.magento.js" after="-" template="Magento_Theme::magento_footer_js.phtml" />
+        </referenceContainer>
+    </body>
+</page>

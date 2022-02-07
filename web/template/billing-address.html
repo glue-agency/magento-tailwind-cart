@@ -1,0 +1,56 @@
+<!--
+/**
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<div class="checkout-back-to-shipping-method">
+    <button class="action action-back" data-bind="click: backToShippingMethod">
+        <span data-bind="i18n: 'Back'"></span>
+    </button>
+</div>
+
+
+<div class="checkout-billing-address" data-bind="visible: !isDeliveryToStore()">
+    <div data-bind="i18n: 'Billing Address'" class="step-title" data-role="title"><?= __('Billing Address');?>:</div>
+
+    <!-- ko template: 'Magento_Checkout/billing-address/details' --><!-- /ko -->
+
+    <fieldset class="fieldset" data-bind="visible: !isAddressDetailsVisible()">
+        <!-- ko template: 'Magento_Checkout/billing-address/list' --><!-- /ko -->
+        <!-- ko template: 'Magento_Checkout/billing-address/form' --><!-- /ko -->
+        <!-- ko if: (!quoteIsVirtual) -->
+        <div class="actions-toolbar">
+            <div class="primary">
+                <button class="action action-update" type="button" data-bind="click: updateAddress">
+                    <span data-bind="i18n: 'Update'"></span>
+                </button>
+                <button class="action action-cancel" type="button" data-bind="click: cancelAddressEdit">
+                    <span data-bind="i18n: 'Cancel'"></span>
+                </button>
+            </div>
+        </div>
+        <!--/ko-->
+    </fieldset>
+    <div class="billing-address-same-as-shipping-block field choice" data-bind="visible: canUseShippingAddress()">
+        <input type="checkbox" name="billing-address-same-as-shipping"
+               data-bind="checked: isAddressSameAsShipping, click: useShippingAddress, attr: {id: 'billing-address-same-as-shipping-' + getCode($parent)}"/>
+        <label data-bind="attr: {for: 'billing-address-same-as-shipping-' + getCode($parent)}"><span
+                data-bind="i18n: 'My billing and shipping address are the same'"></span></label>
+    </div>
+</div>
+<!-- ko if: (quoteIsVirtual && !isAddressDetailsVisible()) -->
+<li id="billing-actions" class="checkout-billing-actions"
+    data-bind="click: updateAddress"
+    role="presentation">
+    <div id="checkout-step-billing-actions"
+         class="step-content"
+         data-role="content">
+        <div class="actions-toolbar" id="billing-method-buttons-container">
+            <div class="primary float-right next-btn">
+                <label for="submit-form" class="button action continue primary btn btn-success"><span><!-- ko i18n: 'Next'--><!-- /ko --></span></label>
+            </div>
+        </div>
+    </div>
+</li>
+<!--/ko-->
