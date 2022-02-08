@@ -1,18 +1,18 @@
 
 <section class="py-10 bg-gray-100">
     <div class="craft mb-6 pl-10">
-    <?= $block->getChildHTML('page.main.title'); ?>
+        <?= $block->getChildHTML('page.main.title'); ?>
     </div>
 
     <div class="mb-6">
-    <?= $block->getChildHTML('ambanners.products'); ?>
+        <?= $block->getChildHTML('ambanners.products'); ?>
     </div>
 
     <div class="container mx-auto px-0 lg:px-4">
         <div class="p-4 lg:p-20 bg-white">
             <div class="flex flex-wrap items-start -mx-4">
                 <div class="order-2 lg:order-1 w-full xl:w-8/12 mb-8 xl:mb-0 p-2 lg:pl-4 lg:pr-10">
-                <?= $block->getChildHTML('cart-items'); ?>
+                    <?= $block->getChildHTML('cart-items'); ?>
                 </div>
                 <!-- CART SIDEBAR -->
                 <div class="w-full xl:w-4/12 px-4 text-left order-1 lg:order-2">
@@ -25,10 +25,11 @@
                     <div class="cart-discount-container">
                         <?= $block->getChildHTML('coupon'); ?>
                     </div>
-                    <div class="cart-discount-container">
-                        <?= $block->getChildHTML('amgiftcard'); ?>
-                    </div>
-
+                    <?php if($block->getChildHTML('amgiftcard')): ?>
+                        <div class="cart-discount-container">
+                            <?= $block->getChildHTML('amgiftcard'); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
