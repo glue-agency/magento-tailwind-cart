@@ -32,10 +32,9 @@
                     <?php endif; ?>
                 </div>
             </div>
+            <?php if($block->getChildHTML('customer_loyalty_points')): ?>
+                <?= $block->getChildHTML('customer_loyalty_points'); ?>
+            <?php endif; ?>
         </div>
     </div>
 </section>
-
-<?php if($block->getChildHTML('customer_loyalty_points')): ?>
-    <?= $block->getChildHTML('customer_loyalty_points'); ?>
-<?php endif; ?>
