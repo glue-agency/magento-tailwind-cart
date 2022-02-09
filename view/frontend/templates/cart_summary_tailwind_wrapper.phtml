@@ -35,3 +35,7 @@
         </div>
     </div>
 </section>
+
+<?php if($block->getChildHTML('customer_loyalty_points')): ?>
+    <?= $block->getChildHTML('customer_loyalty_points'); ?>
+<?php endif; ?>
