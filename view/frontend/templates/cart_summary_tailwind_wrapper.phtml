@@ -1,4 +1,9 @@
+<?php
 
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+?>
 <section class="py-10 bg-gray-100">
     <div class="craft mb-6 pl-10">
         <?= $block->getChildHTML('page.main.title'); ?>
@@ -20,21 +25,22 @@
                         <?= $block->getChildHTML('cart.summary'); ?>
                     </div>
 
+                    <?php if ($block->getChildHTML('customer_loyalty_points')): ?>
+                        <?= $block->getChildHTML('customer_loyalty_points'); ?>
+                    <?php endif; ?>
+
                     <div id="payment-method-icons"></div>
 
                     <div class="cart-discount-container">
                         <?= $block->getChildHTML('coupon'); ?>
                     </div>
-                    <?php if($block->getChildHTML('amgiftcard')): ?>
+                    <?php if ($block->getChildHTML('amgiftcard')): ?>
                         <div class="cart-discount-container">
                             <?= $block->getChildHTML('amgiftcard'); ?>
                         </div>
                     <?php endif; ?>
                 </div>
             </div>
-            <?php if($block->getChildHTML('customer_loyalty_points')): ?>
-                <?= $block->getChildHTML('customer_loyalty_points'); ?>
-            <?php endif; ?>
         </div>
     </div>
 </section>
