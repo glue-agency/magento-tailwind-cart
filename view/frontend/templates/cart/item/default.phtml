@@ -68,7 +68,7 @@ if ($salesrulesPerItem = $_item->getQuote()->getSalesrulesPerItem()) {
             <!-- PRODUCT NAME -->
             <div class="md:w-2/3 w-full px-4">
                 <!-- PRODUCT NAME/URL -->
-                <h3 class="mb-2 text-xl font-bold font-heading">
+                <h3 class="cart__product-name mb-2 text-xl font-bold font-heading">
                     <?php if ($block->hasProductUrl()): ?>
                         <a href="<?php /* @escapeNotVerified */
                         echo $block->getProductUrl() ?>"><?php echo $block->escapeHtml($block->getProductName()) ?></a>
@@ -80,7 +80,7 @@ if ($salesrulesPerItem = $_item->getQuote()->getSalesrulesPerItem()) {
 
                 <!-- PRODUCT OPTIONS -->
                 <?php if ($_options = $block->getOptionList()): ?>
-                    <ul class="flex flex-wrap mt-2 ">
+                    <ul class="flex flex-wrap mt-2 cart__product-options">
                         <?php foreach ($_options as $_option) : ?>
                             <?php $_formatedOptionValue = $block->getFormatedOptionValue($_option) ?>
                             <li class="mr-4">
@@ -120,7 +120,7 @@ if ($salesrulesPerItem = $_item->getQuote()->getSalesrulesPerItem()) {
     <!-- PRODUCT PRICE PER ITEM -->
 
     <!-- PRODUCT PRICE -->
-    <div class="hidden lg:block lg:w-2/12 px-4">
+    <div class="hidden lg:block lg:w-2/12 px-4 cart__product-price">
 
         <p class="cart-price">
 
@@ -142,7 +142,7 @@ if ($salesrulesPerItem = $_item->getQuote()->getSalesrulesPerItem()) {
 
     <!-- PRODUCT QUANTITY SELECTOR-->
     <!-- START QUANTITY SELECTOR -->
-    <div class=" w-1/2 md:w-1/6 lg:w-2/12 px-4">
+    <div class=" w-1/2 md:w-1/6 lg:w-2/12 px-4 cart__product-quantity">
         <div
             class="inline-flex items-center px-4 font-semibold font-heading text-gray-500 border border-gray-200 focus:ring-blue-300 focus:border-blue-300 rounded-md"
             id="qty_change_<?php /* @escapeNotVerified */ echo $_item->getId() ?>"
@@ -217,7 +217,7 @@ if ($salesrulesPerItem = $_item->getQuote()->getSalesrulesPerItem()) {
     <!-- END QUANTITY SELECTOR -->
 
     <!-- START FINAL PRICE -->
-    <div class="w-1/2 md:w-1/6 lg:w-2/12 px-4 text-right">
+    <div class="w-1/2 md:w-1/6 lg:w-2/12 px-4 text-right cart__product-final-price">
 
         <!-- PRODUCT TOTAL PRICE  -->
         <?php
