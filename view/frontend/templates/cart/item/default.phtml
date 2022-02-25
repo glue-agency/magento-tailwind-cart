@@ -123,20 +123,17 @@ if ($salesrulesPerItem = $_item->getQuote()->getSalesrulesPerItem()) {
     <div class="hidden lg:block lg:w-2/12 px-4 cart__product-price">
 
         <p class="cart-price">
-
-            <?php if ($item->getProduct()->getPrice() != $item->getPriceInclTax()): ?>
-        <p class="text-base font-bold font-heading"><?= $this->helper(Magento\Checkout\Helper\Data::class)->formatPrice($item->getPriceInclTax()) ?></p>
-        <span class="text-sm text-gray-500 line-through"><?= /* @escapeNotVerified */
-            $this->helper(Magento\Checkout\Helper\Data::class)->formatPrice($item->getProduct()->getPrice());
-             ?></span>
-        <?php else: ?>
-            <p class="text-base font-bold font-heading">
-                <?= /* @escapeNotVerified */
-                $this->helper(Magento\Checkout\Helper\Data::class)->formatPrice($item->getPriceInclTax()) ?>
-            </p>
+            <?php if ($item->getProduct()->getPrice() != $item->getPriceInclTax() && $item->getProduct()->getPrice() !== 0): ?>
+                 <p class="text-base font-bold font-heading"><?= $this->helper(Magento\Checkout\Helper\Data::class)->formatPrice($item->getPriceInclTax()) ?></p>
+                <span class="text-sm text-gray-500 line-through"><?= /* @escapeNotVerified */
+                    $this->helper(Magento\Checkout\Helper\Data::class)->formatPrice($item->getProduct()->getPrice());
+                ?></span>
+            <?php else: ?>
+                <p class="text-base font-bold font-heading">
+                    <?= /* @escapeNotVerified */
+                    $this->helper(Magento\Checkout\Helper\Data::class)->formatPrice($item->getPriceInclTax()) ?>
+                </p>
         <?php endif; ?>
-        </span>
-
     </div>
     <!-- END PRODUC PRICE -->
 
