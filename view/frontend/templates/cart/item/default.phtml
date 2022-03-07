@@ -44,7 +44,7 @@ if ($salesrulesPerItem = $_item->getQuote()->getSalesrulesPerItem()) {
     <div class="w-full md:w-4/6 lg:w-6/12 px-4 mb-6 md:mb-0">
         <div class="flex -mx-4 flex-wrap items-center">
             <!-- PRODUCT IMAGE -->
-            <div class="w-full md:w-1/3 px-4 mb-3 ">
+            <div class="w-1/3 sm:w-full md:w-1/3 px-4 mb-3 ">
                 <div class="items-center justify-center w-full md:w-24 bg-gray-100">
                     <?php if ($block->hasProductUrl()): ?>
                     <a href="<?php echo $block->getProductUrl() ?>"
@@ -66,7 +66,7 @@ if ($salesrulesPerItem = $_item->getQuote()->getSalesrulesPerItem()) {
             <!-- END PRODUCT IMAGE -->
 
             <!-- PRODUCT NAME -->
-            <div class="md:w-2/3 w-full px-4">
+            <div class="w-2/3 sm:w-full md:w-2/3 px-4">
                 <!-- PRODUCT NAME/URL -->
                 <h3 class="cart__product-name mb-2 text-xl font-bold font-heading">
                     <?php if ($block->hasProductUrl()): ?>
